@@ -1,67 +1,66 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton'
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
-import AddIcon from '@material-ui/icons/Add';
+import React from "react";
+import {
+  IconButton,
+  makeStyles,
+  GridListTile,
+  GridListTileBar,
+} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import { getDefaultImg } from "./../utility/relatedUtility.js";
 
-
-const useStyles = makeStyles({
-
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    color: "rgba(255, 255, 255, 1)",
   },
-  title: {
-    fontSize: 14,
+  media: {
+    minWidth: 325,
+    maxWidth: 325,
+    minHeight: 335,
+    maxHeight: 335,
   },
-  pos: {
-    marginBottom: 8,
-  },
-});
+}));
 
 const AddOutFitCard = ({ addOutfit, id, styles }) => {
-  console.log('|STYLES||', styles);
+  const displayPhoto = () => {
+    let photoResults = getDefaultImg(styles);
+    if (photoResults === "No Photo Available") {
+      return (
+        <img
+          className={classes.media}
+          src={`https://images.unsplash.com/photo-1577460551100-907ba84418ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1948&q=80`}
+        />
+      );
+    } else {
+      return <img className={classes.media} src={photoResults} />;
+    }
+  };
+
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>
   return (
-    <Card
-      container
-      direction={'row'}
-      justify="space-between"
-      alignItems='center'
-      spacing={3}
-      margin='16px 0px 12px 0px'
-    >
-      <CardHeader
-        action={
-          <IconButton aria-label="settings" onClick={() => { addOutfit(id, styles) }}>
+    <GridListTile cols={12}>
+      {displayPhoto()}
+      <GridListTileBar
+        titlePosition="top"
+        title="Add to Outfits"
+        subtitle=" "
+        actionIcon={
+          <IconButton
+            aria-label="primary"
+            className={classes.icon}
+            onClick={() => {
+              addOutfit(id, styles);
+            }}
+          >
             <AddIcon />
           </IconButton>
         }
       />
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          Add to Outfit
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">          
-        </Typography>
-        <Typography variant="body2" component="p">
-          <br />
-        </Typography>
-        <Box component='fieldset' mb={3} borderColor='transparent' visibility='hidden'>
-            <Rating readOnly />       
-        </Box>
-      </CardContent>
-    </Card>
+      <GridListTileBar
+        titlePosition="bottom"
+        actionIcon={<IconButton aria-label={`primary`}></IconButton>}
+      />
+    </GridListTile>
   );
-}
+};
 
-export default AddOutFitCard
+export default AddOutFitCard;

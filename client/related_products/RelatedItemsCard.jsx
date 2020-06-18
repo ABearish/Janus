@@ -1,168 +1,105 @@
-import React, { useEffect } from 'react';
-import CardHeader from '@material-ui/core/CardHeader';
-import IconButton from '@material-ui/core/IconButton'
-import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
-import { getDefaultImg } from '../utility/relatedUtility.js';
-import ComparisonModal from './ComparisonModal';
-import { salePrice, avgRatings } from './../utility/relatedUtility.js';
+import React, { useEffect } from "react";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Grid,
+  IconButton,
   Typography,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-
-
-
+  makeStyles,
+  GridListTile,
+  GridListTileBar,
+} from "@material-ui/core";
+import Rating from "@material-ui/lab/Rating";
+import ComparisonModal from "./ComparisonModal";
+import {
+  salePrice,
+  avgRatings,
+  getDefaultImg,
+} from "./../utility/relatedUtility.js";
 
 const useStyles = makeStyles((theme) => ({
-  cardGrid: {
-    paddingTop: theme.spacing(12),
-    paddingBottom: theme.spacing(8),
+  icon: {
+    color: "rgba(255, 215, 0, 1)",
   },
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+  media: {
+    minWidth: 325,
+    maxWidth: 325,
+    minHeight: 335,
+    maxHeight: 335,
   },
-  cardMedia: {
-    paddingTop: '56.25%', // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
+  title: {
+    color: theme.palette.primary.dark,
   },
 }));
 
-// const useStyles = makeStyles({  
-//   media: {
-//     // paddingTop: '100%', // 16:9
-//     height: 120,
-//   // },
-//   // title: {
-//   //   fontSize: 14,
-//   // },
-//   // pos: {
-//   //   marginBottom: 12,
-//   // },
-//   cardHeader: { 
-//     height: 10,
-//   },
-//   card: {
-//     width: 225
-//   }
-
-// });
-
 const relatedItemsCard = (props) => {
-  const {
-    item,
-    id,
-    info,
-  } = props;
+  const { item, id, info } = props;
   const classes = useStyles();
+
   useEffect(() => {
-    displayComparison()
-  }, [])
+    displayComparison();
+  }, []);
+
   const displayPhoto = () => {
-    if (!item.styles) {
+    let photoResults = getDefaultImg(item.styles);
+    if (photoResults === "No Photo Available") {
       return (
-        null
-      )
-    } else {
-      let photoSrc = '';
-      photoSrc = getDefaultImg(item.styles);
-      return (
-        <CardMedia
-          className={classes.cardMedia}
-          image={photoSrc}
-          title={item.name}
+        <img
+          className={classes.media}
+          src={`https://images.unsplash.com/photo-1577460551100-907ba84418ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1948&q=80`}
         />
-      )
+      );
+    } else {
+      return <img className={classes.media} src={photoResults} />;
     }
-  }
-  let results = salePrice(item.styles);
+  };
   const stylePrice = () => {
+    let results = salePrice(item.styles);
     if (!results) {
       return (
         <Typography variant="body2" component="p">
-          {item.name}
-          <br />
-          {`$${item.price}`}
-        </Typography>
-      )
-    } else if (results[0] !== 'S') {
-      return (
-        <Typography variant="body2" component="p">
-          {item.name}
-          <br />
           {`$${results}`}
         </Typography>
-      )
+      );
     } else {
       return (
-        <Typography variant="body2" component="p" color='red'>
-          {item.name}
-          <br />
+        <Typography variant="body2" component="p" color="inherit">
           {`$${results}`}
         </Typography>
-      )
+      );
     }
-  }
+  };
   const displayComparison = () => {
     if (!info && !item) {
-      return (
-        null
-      )
+      return null;
     } else {
-      return (
-        < ComparisonModal currentItem={item} info={info} />
-      )
+      return <ComparisonModal currentItem={item} info={info} />;
     }
-  }
+  };
   const showRating = () => {
     let rating = avgRatings(item.ratings);
-    if (rating === 0) {
-      return (
-        <Box component='fieldset' mb={3} borderColor='transparent' visibility='hidden'>
-          <Rating name='read-only' value={0} readOnly />
-        </Box>
-      )
+    if (rating === 0 || undefined) {
+      return <Rating name="read-only" value={0} readOnly />;
     } else {
-      return (
-        <Box component='fieldset' mb={3} borderColor='transparent'>
-          <Rating name='read-only' value={(rating)} readOnly />
-        </Box>
-      )
+      return <Rating name="read-only" value={rating} readOnly />;
     }
-  }
-  const bull = <span className={classes.bullet}>•</span>;
+  };
   return (
-    <Card className={classes.card}>
-      <CardHeader
-        className={classes.cardHeader}
-        action={
-          <IconButton aria-label="settings" color='secondary' size='small' >
-            {displayComparison()}
-          </IconButton>
+    <GridListTile cols={12}>
+      {displayPhoto()}
+      <GridListTileBar
+        titlePosition="top"
+        title={item.name}
+        subtitle={item.category}
+        actionIcon={
+          <IconButton aria-label={`primary`}>{displayComparison()}</IconButton>
         }
       />
-      {displayPhoto()}
-      <CardContent>
-        <Typography variant="h5" component="h2">
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">
-          {item.category}
-        </Typography>
-        {stylePrice()}
-        {showRating()}
-      </CardContent>
-    </Card>
+      <GridListTileBar
+        titlePosition="bottom"
+        title={stylePrice()}
+        actionIcon={
+          <IconButton aria-label={`setting`}>{showRating()}</IconButton>
+        }
+      />
+    </GridListTile>
   );
-}
+};
 export default relatedItemsCard;

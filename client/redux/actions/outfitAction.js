@@ -2,21 +2,17 @@ import * as actionType from './actionsTypes';
 import axios from 'axios';
 
 export const addOutfitAction = (outfit) => {
-  console.log('| ADD OUTFIT ACITON | ', outfit);
   let results = JSON.parse(window.localStorage.getItem('outfits'));
   if (results === null) {
-    console.log('|LOCAL STORAGE| |IF| ', results)
     results = [];
   }
   else {
     results = results.filter((ele) => {
       return outfit.results.id !== ele.results.id
     })
-    console.log('|AFTER STORAGE| ', results);
   }
   results.push(outfit);
   window.localStorage.setItem('outfits', JSON.stringify(results));
-  console.log('|AFTER SET| ', results);  
   return {
     type: actionType.addOutfit,
     results: results,
@@ -28,10 +24,7 @@ export const removeOutfitAction = (id) => {
   results = results.filter((ele) => {
     return id !== ele.results.id
   })
-  console.log('RESULTS ', results);
-  console.log('|After REMOVE ITEM|', window.localStorage.getItem('outfits'));
   window.localStorage.setItem('outfits', JSON.stringify(results));
-  console.log(results);
   return {
     type: actionType.removeOutfit,
     id: id,
@@ -40,7 +33,6 @@ export const removeOutfitAction = (id) => {
 export const updateOutfit = () => {
   let results = JSON.parse(window.localStorage.getItem('outfits'));
   if (results === null) {
-    console.log('|LOCAL STORAGE| |IF| ', results)
     results = [];
   }
   return {
@@ -52,12 +44,16 @@ export const updateOutfit = () => {
 
 export const fetchOutfit = (id, styles) => {
   return dispatch => {
-    axios.get(`http://18.224.200.47/products/${id}`)
-      .then((results) => {
-        let data = {
-          results: results.data,
-          styles: styles,
-        }
+    let promised = [];
+    promised.push(
+    axios.get(`http://18.224.200.47/products/${id}`), axios.get(`http://18.224.200.47/reviews/${id}/meta`))    
+    return Promise.all(promised)
+    .then((results) => {
+      let data = {
+        results: results[0].data,
+        ratings: results[1].data.ratings,
+        styles: styles
+      }
         dispatch(addOutfitAction(data))
       })
       .catch((err) => console.error(err));
