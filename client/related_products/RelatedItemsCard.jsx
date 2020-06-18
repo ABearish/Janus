@@ -60,7 +60,7 @@ const relatedItemsCard = (props) => {
       );
     } else {
       return (
-        <Typography variant="body2" component="p" color="inherit">
+        <Typography variant="body2" component="p">
           {`$${results}`}
         </Typography>
       );
