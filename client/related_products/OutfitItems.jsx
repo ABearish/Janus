@@ -6,6 +6,7 @@ import AddOutFitCard from "./AddOutFitCard";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { makeStyles } from "@material-ui/core/styles";
+import DummyCard from './DummyCard'
 
 const OutfitItems = ({
   onDeleteOutfit,

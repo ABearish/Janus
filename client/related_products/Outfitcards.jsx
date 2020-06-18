@@ -42,18 +42,18 @@ const Outfitcards = ({ removeOutfit, item }) => {
     }
   };
 
-  const stylePrice = () => {
+  const stylePrice = () => {  
     let results = salePrice(item.styles);
     if (!results) {
       return (
         <Typography variant="body2" component="p">
-          {`$${results}`}
+          {`$${results || item.price}`}
         </Typography>
       );
     } else {
       return (
         <Typography variant="body2" component="p">
-          {`$${results}`}
+          {`$${results || item.price}`}
         </Typography>
       );
     }

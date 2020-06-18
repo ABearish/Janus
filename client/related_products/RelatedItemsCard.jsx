@@ -55,13 +55,13 @@ const relatedItemsCard = (props) => {
     if (!results) {
       return (
         <Typography variant="body2" component="p">
-          {`$${results}`}
+          {`$${results || item.price}`}
         </Typography>
       );
     } else {
       return (
         <Typography variant="body2" component="p">
-          {`$${results}`}
+          {`$${results || item.price}`}
         </Typography>
       );
     }
